@@ -1,2 +1,4 @@
 # codingame.com
-codingame.com solutions
+My solutions for codingame.com
+
+Don't use my solutions to cheat...
