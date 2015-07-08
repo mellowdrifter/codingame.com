@@ -12,11 +12,6 @@ import (
  * the standard input according to the problem statement.
  **/
 
-type mimeType struct {
-    extension string
-    mime string
-}
-
 func main() {
     scanner := bufio.NewScanner(os.Stdin)
 
@@ -25,24 +20,28 @@ func main() {
     scanner.Scan()
     fmt.Sscan(scanner.Text(),&N)
     
-    // Create slice of file types
-    fileTypes := make([]mimeType, N)
-    
     // Q: Number Q of file names to be analyzed.
     var Q int
     scanner.Scan()
     fmt.Sscan(scanner.Text(),&Q)
     
+    // Create map, AKA hash table
+    mimeType := make(map[string]string)
+    mimeTypeLower := make(map[string]string)
+    
     // MIME types
     for i := 0; i < N; i++ {
-        // Pull out information into a struct
-        var checkType mimeType
-        scanner.Scan()
-        fmt.Sscan(scanner.Text(),&checkType.extension, &checkType.mime)
         
-        // Append it to list
-        fileTypes[i] = checkType
+        // Pull out information
+        var ET, MT string
+        scanner.Scan()
+        fmt.Sscan(scanner.Text(),&ET, &MT)
+        
+        // Insert into map. Separate map for lowercase extensions
+        mimeType[ET] = MT
+        mimeTypeLower[strings.ToLower(ET)] = ET
     }
+    
     
     for i := 0; i < Q; i++ {
         var fileExtension string
@@ -54,13 +53,12 @@ func main() {
         if strings.Contains(fileExtension, ".") {
             split := strings.Split(fileExtension, ".")
             end := split[len(split) - 1]
-            end = strings.ToLower(end)
          
-            // Check our list of acceptable extensions
-            for j := 0; j < N; j++ {
-                if (end == strings.ToLower(fileTypes[j].extension)) {
-                    result = fileTypes[j].mime
-                }
+            // Check if extension exists in map
+            key, ok := mimeTypeLower[strings.ToLower(end)]
+            if (ok) {
+                // Get the original extension size
+                result, _ = mimeType[key]
             }
         }
         fmt.Println(result)
